@@ -5,7 +5,7 @@ import compression from 'compression'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import contactRoutes from './routes/contact'
-import adminRoutes from './routes/admin'
+// import adminRoutes from './routes/admin'
 import projectRoutes from './routes/projects'
 import { rateLimiter } from './middleware/rateLimiter'
 import prisma from './utils/prisma'
@@ -68,7 +68,7 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 app.use('/api/contact', contactRoutes)
-app.use('/api/admin', adminRoutes)
+// app.use('/api/admin', adminRoutes)
 app.use('/api', projectRoutes)
 
 // Error handling middleware
