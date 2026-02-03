@@ -1,0 +1,21 @@
+{
+  "name": "Khush Prajapati - Full-Stack Developer",
+  "short_name": "Khush Prajapati",
+  "description": "Full-Stack Developer specializing in React.js, Next.js, Node.js, and modern web technologies",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity", "portfolio"],
+  "lang": "en-US",
+  "dir": "ltr"
+}
