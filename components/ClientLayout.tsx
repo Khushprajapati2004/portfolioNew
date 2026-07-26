@@ -5,6 +5,8 @@ import Lenis from 'lenis';
 import LoadingScreen from './LoadingScreen';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { Toaster } from 'react-hot-toast';
+
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [showContent, setShowContent] = useState(false);
@@ -13,9 +15,10 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   // ── Lenis smooth scroll ──────────────────────────────────────────────────
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 2.5,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      wheelMultiplier: 0.7,
       touchMultiplier: 2,
     });
 
@@ -78,6 +81,32 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       >
         {children}
       </motion.div>
+
+      <Toaster 
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: 'rgba(10, 25, 47, 0.8)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(59, 130, 246, 0.3)',
+            color: '#fff',
+            padding: '16px',
+            borderRadius: '12px',
+          },
+          success: {
+            iconTheme: {
+              primary: '#0ea5e9', // neon-cyan
+              secondary: '#fff',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#fff',
+            },
+          },
+        }}
+      />
     </>
   );
 }

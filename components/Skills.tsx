@@ -19,9 +19,8 @@ function Skills() {
   useEffect(() => {
     const fetchSkills = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
-        const response = await fetch(`${API_URL}/api/skills`, {
-          next: { revalidate: 300 } // Cache for 5 minutes
+        const response = await fetch('/api/skills', {
+          next: { revalidate: 60 } // Cache for 1 minute
         })
         if (response.ok) {
           const data = await response.json()
@@ -68,7 +67,7 @@ function Skills() {
   ].filter(cat => cat.skills.length > 0), [organizedSkills])
 
   return (
-    <section id="skills" className="py-12 sm:py-16 md:py-20 relative overflow-hidden">
+    <section id="skills" className="py-12 sm:py-16 md:py-20 relative overflow-hidden scroll-mt-24">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-glow-blue opacity-30" />
 

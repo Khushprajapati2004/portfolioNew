@@ -19,7 +19,35 @@ export const about = {
 
 export const experience = [
   {
+    id: 0,
+    title: "MERN Stack Developer",
+    company: "Tiny Script Soft Tech Pvt. Ltd.",
+    location: "Ahmedabad, India",
+    period: "Feb 2026 - Present",
+    description: [
+      "Spearheading full-stack development for diverse client projects using MongoDB, Express, React, and Node.js",
+      "Architecting robust and scalable backend systems while crafting intuitive, responsive frontend interfaces",
+      "Consistently delivering high-quality solutions by combining hard work with strong technical problem-solving skills",
+      "Collaborating closely with clients to gather requirements and translate them into seamless digital experiences",
+      "Ensuring optimal application performance, code quality, and implementing modern industry best practices"
+    ]
+  },
+  {
     id: 1,
+    title: "Frontend Developer Intern",
+    company: "Codage Habitation",
+    location: "Ahmedabad, India",
+    period: "Aug 2025 - Feb 2026",
+    description: [
+      "Built responsive web interfaces using React.js, Next.js, and Tailwind CSS",
+      "Converted Figma designs into pixel-perfect, accessible web pages",
+      "Implemented state management solutions using React Context and Redux",
+      "Enhanced website performance achieving 95+ Lighthouse scores",
+      "Worked closely with designers to ensure consistent user experience"
+    ]
+  },
+  {
+    id: 2,
     title: "MERN Stack Developer Intern",
     company: "The Special Character",
     location: "Jagatpur, Ahmedabad",
@@ -30,20 +58,6 @@ export const experience = [
       "Collaborated with cross-functional teams to deliver features on schedule",
       "Optimized database queries resulting in 40% faster page load times",
       "Participated in code reviews and contributed to improving development practices"
-    ]
-  },
-  {
-    id: 2,
-    title: "Frontend Developer Intern",
-    company: "Codage Habitation",
-    location: "Ahmedabad, India",
-    period: "Aug 2025 - Feb 2025",
-    description: [
-      "Built responsive web interfaces using React.js, Next.js, and Tailwind CSS",
-      "Converted Figma designs into pixel-perfect, accessible web pages",
-      "Implemented state management solutions using React Context and Redux",
-      "Enhanced website performance achieving 95+ Lighthouse scores",
-      "Worked closely with designers to ensure consistent user experience"
     ]
   }
 ]
@@ -63,8 +77,8 @@ export const education = {
 }
 
 export const achievements = [
-  "🏆 2nd Place - College Hackathon 2024 for TravelVista project",
-  "🎓 Completed Full-Stack Web Development certification",
+  "🏆 Secured 5th position in Swadheenta’23 hackathon organized by DA-IICT collage.",
+  "🎓 Completed MERN Stack Web Development certification",
   "💻 Contributed to open-source projects on GitHub",
   "📱 Built 10+ responsive web applications",
   "⚡ Achieved 90+ Lighthouse performance scores on production apps"

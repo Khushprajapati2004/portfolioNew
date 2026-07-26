@@ -6,7 +6,7 @@ import AnimatedSection from './AnimatedSection'
 
 export default function Experience() {
   return (
-    <section id="experience" className="py-12 sm:py-16 md:py-20 relative">
+    <section id="experience" className="py-12 sm:py-16 md:py-20 relative scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedSection>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-10 sm:mb-12 md:mb-16">
@@ -18,7 +18,7 @@ export default function Experience() {
 
         <div className="relative">
           {/* Timeline line - centered on desktop, left on mobile */}
-          <div className="absolute left-3 sm:left-4 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 bg-gradient-to-b from-neon-blue via-neon-cyan to-neon-purple" />
+          <div className="absolute left-3 sm:left-4 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 bg-gradient-to-b from-neon-blue via-neon-cyan to-neon-purple z-0" />
 
           {experience.map((exp, index) => (
             <motion.div
@@ -35,10 +35,10 @@ export default function Experience() {
             >
               {/* Timeline dot - Desktop */}
               <div
-                className="hidden md:block absolute top-5 sm:top-6 w-4 h-4 sm:w-5 sm:h-5 bg-neon-blue rounded-full border-4 border-black z-10 shadow-lg shadow-neon-blue/50"
+                className="hidden md:block absolute top-5 sm:top-6 w-4 h-4 sm:w-5 sm:h-5 bg-neon-blue rounded-full border-4 border-black z-20 shadow-lg shadow-neon-blue/50"
                 style={{
-                  left: index % 2 === 0 ? 'calc(100% + 1.25rem)' : 'auto',
-                  right: index % 2 === 0 ? 'auto' : 'calc(100% + 1.25rem)'
+                  [index % 2 === 0 ? 'right' : 'left']: '0',
+                  transform: index % 2 === 0 ? 'translateX(50%)' : 'translateX(-50%)',
                 }}
               />
 

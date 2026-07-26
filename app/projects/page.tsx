@@ -28,9 +28,8 @@ export default function ProjectsPage() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
-        const response = await fetch(`${API_URL}/api/projects`, {
-          next: { revalidate: 300 } // Cache for 5 minutes
+        const response = await fetch('/api/projects', {
+          next: { revalidate: 60 } // Cache for 1 minute
         })
         if (response.ok) {
           const data = await response.json()

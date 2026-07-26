@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { fadeInUp } from '@/lib/animations'
+import toast from 'react-hot-toast'
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -27,7 +28,7 @@ export default function ContactForm() {
     setErrorMessage('')
 
     try {
-      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/contact', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,14 +40,15 @@ export default function ContactForm() {
 
       if (response.ok) {
         setStatus('success')
+        toast.success("Message sent successfully! I'll get back to you soon.")
         setFormData({ name: '', email: '', subject: '', message: '' })
       } else {
         setStatus('error')
-        setErrorMessage(data.message || 'Something went wrong. Please try again.')
+        toast.error(data.message || 'Something went wrong. Please try again.')
       }
     } catch (error) {
       setStatus('error')
-      setErrorMessage('Failed to send message. Please try again later.')
+      toast.error('Failed to send message. Please try again later.')
     }
   }
 
@@ -128,26 +130,7 @@ export default function ContactForm() {
           />
         </div>
 
-        {/* Status Messages */}
-        {status === 'success' && (
-          <motion.div
-            className="p-3 sm:p-4 bg-green-500/20 border border-green-500/50 rounded-lg text-green-300 text-sm sm:text-base"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            ✓ Message sent successfully! I'll get back to you soon.
-          </motion.div>
-        )}
-
-        {status === 'error' && (
-          <motion.div
-            className="p-3 sm:p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-300 text-sm sm:text-base"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            ✗ {errorMessage}
-          </motion.div>
-        )}
+        {/* Removed inline status messages in favor of toast */}
 
         {/* Submit Button */}
         <motion.button

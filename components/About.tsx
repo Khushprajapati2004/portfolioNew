@@ -8,7 +8,7 @@ import { staggerContainer, fadeInUp } from '@/lib/animations'
 
 export default function About() {
   return (
-    <section id="about" className="py-12 sm:py-16 md:py-20 relative">
+    <section id="about" className="py-12 sm:py-16 md:py-20 relative scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimatedSection>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-10 sm:mb-12 md:mb-16">
@@ -21,8 +21,8 @@ export default function About() {
         <div className="grid md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center">
           {/* Profile Image Placeholder */}
           <AnimatedSection delay={0.2}>
-            <div className="relative max-w-md mx-auto md:max-w-none">
-              <div className="relative w-full aspect-[4/5] max-w-md mx-auto group">
+            <div className="relative max-w-md mx-auto md:max-w-none md:mx-0">
+              <div className="relative w-full aspect-[4/5] max-w-md mx-auto md:mx-0 group">
                 {/* Decorative background glow */}
                 <div className="absolute -inset-1 bg-gradient-to-tr from-neon-blue to-neon-purple rounded-2xl opacity-20 blur-xl -z-10 group-hover:opacity-50 transition-opacity duration-500" />
 

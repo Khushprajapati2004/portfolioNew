@@ -1,7 +1,8 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import Lenis from 'lenis'
 
 interface Project {
   id: string
@@ -22,6 +23,8 @@ interface ProjectModalProps {
 }
 
 export default function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -32,6 +35,32 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
       document.body.style.overflow = 'unset'
     }
   }, [isOpen])
+
+  // Lenis smooth scroll for the modal
+  useEffect(() => {
+    if (!isOpen || !modalRef.current) return;
+
+    const lenis = new Lenis({
+      wrapper: modalRef.current,
+      content: modalRef.current.firstElementChild as HTMLElement,
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      touchMultiplier: 2,
+    });
+
+    let rafId: number;
+    function raf(time: number) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -59,7 +88,7 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
           />
 
           {/* Modal Container with Scroll */}
-          <div className="fixed inset-0 z-50 overflow-y-auto mt-20">
+          <div className="fixed inset-0 z-50 overflow-y-auto mt-20" ref={modalRef}>
             <div className="flex min-h-full items-center justify-center p-4 sm:p-6 md:p-8">
               <motion.div
                 className="bg-gradient-to-b from-dark-navy to-black border border-glass-border rounded-2xl max-w-5xl w-full shadow-2xl shadow-neon-blue/20 relative"

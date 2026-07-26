@@ -28,12 +28,21 @@ function ProjectCard({ project, onClick }: ProjectCardProps) {
       onClick={onClick}
     >
       {/* Project Image */}
-      <div className="relative h-40 sm:h-48 bg-gradient-to-br from-neon-blue/20 to-neon-purple/20 overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center text-5xl sm:text-6xl font-bold text-white/10">
-          {project.title.substring(0, 2)}
-        </div>
+      <div className="relative h-40 sm:h-48 bg-gradient-to-br from-neon-blue/20 to-neon-purple/20 overflow-hidden group-hover:shadow-[inset_0_0_20px_rgba(59,130,246,0.3)] transition-all duration-300">
+        {project.image && project.image !== '/images/projects/default.jpg' ? (
+          <img 
+            src={project.image} 
+            alt={project.title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center text-5xl sm:text-6xl font-bold text-white/10">
+            {project.title.substring(0, 2)}
+          </div>
+        )}
         <motion.div
-          className="absolute inset-0 bg-gradient-to-t from-dark-navy to-transparent opacity-60"
+          className="absolute inset-0 bg-gradient-to-t from-dark-navy/80 to-transparent opacity-60"
           whileHover={{ opacity: 0.3 }}
         />
       </div>

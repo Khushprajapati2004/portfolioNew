@@ -25,7 +25,6 @@ export default function Navbar() {
   }, [])
 
   const navLinks = [
-    { name: 'Home', href: '/' },
     { name: 'About', href: '/#about' },
     { name: 'Skills', href: '/#skills' },
     { name: 'Projects', href: '/projects' },
@@ -45,12 +44,14 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link href="/">
-            <Logo />
-          </Link>
+          <div className="flex-1 flex justify-start">
+            <Link href="/">
+              <Logo />
+            </Link>
+          </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-6 xl:space-x-8">
+          <div className="hidden lg:flex flex-[2] justify-center items-center space-x-6 xl:space-x-8">
             {navLinks.map((link) => (
               <Link key={link.name} href={link.href}>
                 <motion.span
@@ -61,26 +62,30 @@ export default function Navbar() {
                 </motion.span>
               </Link>
             ))}
-            
-            {/* Download Resume Button */}
-            <a href={personalInfo.resumeUrl} download>
-              <motion.button
-                className="px-4 xl:px-6 py-2 bg-transparent border-2 border-neon-blue text-neon-blue text-sm xl:text-base font-semibold rounded-lg hover:bg-neon-blue hover:text-white transition-all duration-300 whitespace-nowrap"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Resume
-              </motion.button>
-            </a>
           </div>
+          
+          {/* Right Side (Resume / Mobile Menu) */}
+          <div className="flex-1 flex justify-end items-center">
+            {/* Download Resume Button */}
+            <div className="hidden lg:block">
+              <a href={personalInfo.resumeUrl} download>
+                <motion.button
+                  className="px-4 xl:px-6 py-2 bg-transparent border-2 border-neon-blue text-neon-blue text-sm xl:text-base font-semibold rounded-lg hover:bg-neon-blue hover:text-white transition-all duration-300 whitespace-nowrap"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Resume
+                </motion.button>
+              </a>
+            </div>
 
-          {/* Mobile menu button */}
-          <button
-            className="lg:hidden text-white focus:outline-none p-2 hover:bg-white/10 rounded-lg transition-colors"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
-          >
-            <svg
+            {/* Mobile menu button */}
+            <button
+              className="lg:hidden text-white focus:outline-none p-2 ml-4 hover:bg-white/10 rounded-lg transition-colors"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle menu"
+            >
+              <svg
               className="w-6 h-6 sm:w-7 sm:h-7"
               fill="none"
               strokeLinecap="round"
@@ -96,6 +101,7 @@ export default function Navbar() {
               )}
             </svg>
           </button>
+        </div>
         </div>
 
         {/* Mobile Navigation */}

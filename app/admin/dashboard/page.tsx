@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Logo from '@/components/Logo'
+import toast from 'react-hot-toast'
 
 // ─── Interfaces ───────────────────────────────────────────────────────────────
 
@@ -151,13 +152,14 @@ export default function AdminDashboardPage() {
       if (res.ok) {
         const data = await res.json()
         setSkills(prev => [...prev, data.data])
+        toast.success('Skill added successfully')
         return true
       }
       if (res.status === 401) { handleLogout(); return false }
       const err = await res.json()
-      alert(err.message || 'Failed to add skill')
-    } catch {
-      alert('Failed to add skill')
+      toast.error(err.message || 'Failed to add skill')
+    } catch (error: any) {
+      toast.error(`Failed to add skill: ${error.message}`)
     }
     return false
   }
@@ -173,13 +175,14 @@ export default function AdminDashboardPage() {
       if (res.ok) {
         const data = await res.json()
         setSkills(prev => prev.map(s => s._id === id ? data.data : s))
+        toast.success('Skill updated successfully')
         return true
       }
       if (res.status === 401) { handleLogout(); return false }
-      const err = await res.json()
-      alert(err.message || 'Failed to update skill')
-    } catch {
-      alert('Failed to update skill')
+      const errorData = await res.json()
+      toast.error(`Failed to update skill: ${errorData.message || 'Unknown error'}`)
+    } catch (error: any) {
+      toast.error(`Failed to update skill: ${error.message}`)
     }
     return false
   }
@@ -194,11 +197,15 @@ export default function AdminDashboardPage() {
       })
       if (res.ok) {
         setSkills(prev => prev.filter(s => s._id !== id))
+        toast.success('Skill deleted successfully')
       } else if (res.status === 401) {
         handleLogout()
+      } else {
+        const errorData = await res.json()
+        toast.error(`Failed to delete skill: ${errorData.message || 'Unknown error'}`)
       }
-    } catch {
-      alert('Failed to delete skill')
+    } catch (error: any) {
+      toast.error(`Failed to delete skill: ${error.message}`)
     }
   }
 
@@ -215,11 +222,15 @@ export default function AdminDashboardPage() {
       if (res.ok) {
         setMessages(prev => prev.filter(m => m._id !== id))
         setSelectedMessage(null)
+        toast.success('Message deleted successfully')
       } else if (res.status === 401) {
         handleLogout()
+      } else {
+        const errorData = await res.json()
+        toast.error(`Failed to delete message: ${errorData.message || 'Unknown error'}`)
       }
-    } catch {
-      alert('Failed to delete message')
+    } catch (error: any) {
+      toast.error(`Failed to delete message: ${error.message}`)
     }
   }
 
@@ -236,11 +247,14 @@ export default function AdminDashboardPage() {
       if (res.ok) {
         const data = await res.json()
         setProjects(prev => [...prev, data.data])
+        toast.success('Project added successfully')
         return true
       }
       if (res.status === 401) { handleLogout(); return false }
-    } catch {
-      alert('Failed to add project')
+      const errorData = await res.json()
+      toast.error(`Failed to add project: ${errorData.message || 'Unknown error'}`)
+    } catch (error: any) {
+      toast.error(`Failed to add project: ${error.message}`)
     }
     return false
   }
@@ -255,11 +269,15 @@ export default function AdminDashboardPage() {
       })
       if (res.ok) {
         setProjects(prev => prev.filter(p => p.id !== id))
+        toast.success('Project deleted successfully')
       } else if (res.status === 401) {
         handleLogout()
+      } else {
+        const errorData = await res.json()
+        toast.error(`Failed to delete project: ${errorData.message || 'Unknown error'}`)
       }
-    } catch {
-      alert('Failed to delete project')
+    } catch (error: any) {
+      toast.error(`Failed to delete project: ${error.message}`)
     }
   }
 
@@ -274,47 +292,78 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-dark-navy to-black pt-20 pb-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
-          <div className="flex items-center gap-4">
-            <Link href="/">
-              <Logo />
-            </Link>
-            <h1 className="text-3xl font-bold border-l-2 border-glass-border pl-4">
-              <span className="bg-gradient-to-r from-neon-blue to-neon-cyan bg-clip-text text-transparent">
-                Admin Dashboard
-              </span>
-            </h1>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="px-6 py-2 bg-red-500/20 border border-red-500/50 text-red-300 rounded-lg hover:bg-red-500/30 transition-all"
-          >
-            Logout
-          </button>
-        </div>
-
-        {/* Tabs */}
-        <div className="flex space-x-4 mb-8 border-b border-glass-border overflow-x-auto">
-          {(['messages', 'projects', 'skills'] as const).map(tab => (
+    <div className="min-h-screen bg-gradient-to-b from-black via-dark-navy to-black pt-4 pb-20">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header Section */}
+        <div className="bg-glass-white/5 backdrop-blur-xl border border-glass-border/50 rounded-2xl p-4 sm:p-6 mb-8 shadow-2xl relative overflow-hidden">
+          {/* Subtle background glow */}
+          <div className="absolute -top-24 -right-24 w-64 h-64 bg-neon-blue/10 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-6 mb-6 relative z-10">
+            <div className="flex items-center gap-5">
+              <div className="bg-black/50 p-2.5 rounded-xl border border-glass-border/50 shadow-inner">
+                <Link href="/">
+                  <Logo />
+                </Link>
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+                  <span className="bg-gradient-to-r from-white via-blue-100 to-neon-blue bg-clip-text text-transparent">
+                    Admin Dashboard
+                  </span>
+                </h1>
+                <p className="text-gray-400 text-sm mt-1">Manage your portfolio content</p>
+              </div>
+            </div>
             <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-6 py-3 text-sm font-semibold capitalize transition-all whitespace-nowrap ${
-                activeTab === tab
-                  ? 'text-neon-blue border-b-2 border-neon-blue'
-                  : 'text-gray-400 hover:text-white'
-              }`}
+              onClick={handleLogout}
+              className="px-5 py-2.5 bg-gradient-to-r from-red-500/10 to-red-900/20 border border-red-500/30 text-red-400 font-medium rounded-xl hover:bg-red-500/20 hover:text-red-300 hover:border-red-500/50 hover:shadow-[0_0_15px_rgba(239,68,68,0.2)] transition-all flex items-center gap-2 group"
             >
-              {tab}
-              {tab === 'messages' && messages.length > 0 && (
-                <span className="ml-2 text-xs bg-neon-blue/20 text-neon-blue px-2 py-0.5 rounded-full">
-                  {messages.length}
-                </span>
-              )}
+              <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              Sign Out
             </button>
-          ))}
+          </div>
+
+          {/* Tabs */}
+          <div className="flex space-x-2 overflow-x-auto custom-scrollbar pb-1 relative z-10">
+            {(['messages', 'projects', 'skills'] as const).map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`relative px-5 py-2.5 text-sm font-semibold capitalize transition-all whitespace-nowrap rounded-xl ${
+                  activeTab === tab
+                    ? 'text-white bg-neon-blue/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] border border-neon-blue/30'
+                    : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  {tab === 'messages' && (
+                    <svg className={`w-4 h-4 ${activeTab === tab ? 'text-neon-blue' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  )}
+                  {tab === 'projects' && (
+                    <svg className={`w-4 h-4 ${activeTab === tab ? 'text-neon-cyan' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                    </svg>
+                  )}
+                  {tab === 'skills' && (
+                    <svg className={`w-4 h-4 ${activeTab === tab ? 'text-neon-purple' : 'text-gray-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  )}
+                  {tab}
+                  {tab === 'messages' && messages.length > 0 && (
+                    <span className={`ml-1 text-[10px] px-2 py-0.5 rounded-full ${activeTab === tab ? 'bg-neon-blue text-white' : 'bg-neon-blue/20 text-neon-blue'}`}>
+                      {messages.length}
+                    </span>
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
 
         <AnimatePresence mode="wait">
@@ -363,62 +412,136 @@ function MessagesTab({ messages, selectedMessage, setSelectedMessage, deleteMess
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="grid md:grid-cols-2 gap-6"
+      className="grid md:grid-cols-12 gap-6 lg:gap-8 relative items-start"
     >
-      <div className="space-y-3">
-        <h2 className="text-xl font-semibold text-white mb-4">Messages ({messages.length})</h2>
-        {messages.length === 0 && (
-          <p className="text-gray-500 text-sm italic">No messages yet.</p>
-        )}
-        {messages.map(msg => (
-          <div
-            key={msg._id}
-            onClick={() => setSelectedMessage(msg)}
-            className={`bg-glass-white backdrop-blur-glass border rounded-xl p-4 cursor-pointer transition-all ${
-              selectedMessage?._id === msg._id
-                ? 'border-neon-blue'
-                : 'border-glass-border hover:border-neon-blue/50'
-            }`}
-          >
-            <h3 className="text-white font-semibold">{msg.name}</h3>
-            <p className="text-gray-400 text-sm">{msg.email}</p>
-            <p className="text-gray-300 text-sm mt-1 truncate">{msg.subject}</p>
+      {/* Left side: Message List */}
+      <div className="md:col-span-5 lg:col-span-4 max-h-[80vh] overflow-y-auto pr-2 custom-scrollbar relative">
+        <div className="sticky top-0 bg-black/95 backdrop-blur-xl p-4 rounded-md z-10 border-b border-glass-border/50 mb-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <svg className="w-5 h-5 text-neon-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              Inbox
+            </h2>
+            <span className="bg-neon-blue/10 border border-neon-blue/30 text-neon-blue text-xs font-bold px-3 py-1 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+              {messages.length} Total
+            </span>
           </div>
-        ))}
+        </div>
+
+        <div className="space-y-4">
+          {messages.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 px-4 text-center border border-dashed border-glass-border rounded-xl bg-glass-white/5 backdrop-blur-sm">
+              <div className="w-16 h-16 rounded-full bg-neon-blue/10 flex items-center justify-center mb-4">
+                <svg className="w-8 h-8 text-neon-blue/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+              </div>
+              <p className="text-gray-300 font-semibold mb-1">Your inbox is empty</p>
+              <p className="text-gray-500 text-xs">When people contact you via the form, their messages will appear here.</p>
+            </div>
+          ) : (
+            messages.map(msg => (
+              <div
+                key={msg._id}
+                onClick={() => setSelectedMessage(msg)}
+                className={`group bg-glass-white backdrop-blur-glass border rounded-xl p-5 cursor-pointer transition-all duration-300 ${selectedMessage?._id === msg._id
+                  ? 'border-neon-blue bg-neon-blue/5 shadow-[0_0_15px_rgba(59,130,246,0.15)]'
+                  : 'border-glass-border hover:border-neon-blue/50 hover:bg-white/5'
+                  }`}
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className={`font-semibold truncate pr-2 ${!msg.read ? 'text-white' : 'text-gray-300'}`}>
+                    {msg.name}
+                  </h3>
+                  {msg.createdAt && (
+                    <span className="text-[10px] text-gray-500 whitespace-nowrap uppercase tracking-wider pt-1">
+                      {new Date(msg.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                    </span>
+                  )}
+                </div>
+                <p className="text-neon-blue text-xs mb-3 truncate">{msg.email}</p>
+                <p className="text-gray-400 text-sm line-clamp-2 leading-relaxed group-hover:text-gray-300 transition-colors">{msg.subject}</p>
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
-      <div>
+      {/* Right side: Message Details */}
+      <div className="md:col-span-7 lg:col-span-8 md:sticky md:top-24">
         {selectedMessage ? (
-          <div className="bg-glass-white backdrop-blur-glass border border-glass-border rounded-xl p-6">
-            <div className="flex justify-between items-start mb-4">
-              <h2 className="text-xl font-bold text-white">Message Details</h2>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            key={selectedMessage._id}
+            className="bg-glass-white backdrop-blur-glass border border-neon-blue/30 rounded-2xl p-6 md:p-8 shadow-[0_0_30px_rgba(59,130,246,0.1)]"
+          >
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-8 pb-6 border-b border-glass-border">
+              <div>
+                <h2 className="text-2xl font-bold text-white mb-2">{selectedMessage.subject}</h2>
+                {selectedMessage.createdAt && (
+                  <p className="text-xs text-gray-400 font-medium">
+                    Received on {new Date(selectedMessage.createdAt).toLocaleString(undefined, {
+                      weekday: 'short', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                    })}
+                  </p>
+                )}
+              </div>
               <button
                 onClick={() => deleteMessage(selectedMessage._id)}
-                className="px-4 py-2 bg-red-500/20 text-red-300 rounded-lg text-sm hover:bg-red-500/30 transition-all"
+                className="px-4 py-2 bg-red-500/10 text-red-400 border border-red-500/30 rounded-lg text-sm hover:bg-red-500/20 hover:text-red-300 transition-all flex items-center gap-2 group whitespace-nowrap self-start"
               >
+                <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
                 Delete
               </button>
             </div>
-            <div className="space-y-3">
-              {[
-                { label: 'From', value: selectedMessage.name, color: 'text-white' },
-                { label: 'Email', value: selectedMessage.email, color: 'text-neon-blue' },
-                { label: 'Subject', value: selectedMessage.subject, color: 'text-white' },
-              ].map(({ label, value, color }) => (
-                <div key={label}>
-                  <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">{label}</p>
-                  <p className={`${color} text-sm`}>{value}</p>
+
+            {/* Content */}
+            <div className="space-y-8">
+              <div className="grid sm:grid-cols-2 gap-4 bg-black/40 p-5 rounded-xl border border-glass-border/50">
+                <div>
+                  <p className="text-gray-500 text-xs uppercase tracking-widest mb-1.5 font-bold">Sender</p>
+                  <div className="flex items-center gap-3 text-white font-medium">
+                    <div className="w-8 h-8 rounded-full bg-neon-blue/20 flex items-center justify-center text-neon-blue font-bold text-sm">
+                      {selectedMessage.name.charAt(0).toUpperCase()}
+                    </div>
+                    {selectedMessage.name}
+                  </div>
                 </div>
-              ))}
+                <div>
+                  <p className="text-gray-500 text-xs uppercase tracking-widest mb-1.5 font-bold">Email</p>
+                  <a href={`mailto:${selectedMessage.email}`} className="flex items-center gap-2 text-neon-blue hover:text-neon-cyan transition-colors font-medium h-8">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    {selectedMessage.email}
+                  </a>
+                </div>
+              </div>
+
               <div>
-                <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">Message</p>
-                <p className="text-gray-300 text-sm whitespace-pre-wrap">{selectedMessage.message}</p>
+                <p className="text-gray-500 text-xs uppercase tracking-widest mb-3 font-bold">Message Content</p>
+                <div className="bg-black/30 border border-glass-border rounded-xl p-6">
+                  <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">
+                    {selectedMessage.message}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         ) : (
-          <div className="bg-glass-white backdrop-blur-glass border border-glass-border rounded-xl p-6 flex items-center justify-center h-48">
-            <p className="text-gray-500 text-sm">Select a message to view details</p>
+          <div className="bg-glass-white backdrop-blur-glass border border-glass-border rounded-2xl p-10 flex flex-col items-center justify-center h-64 text-center">
+            <div className="w-16 h-16 rounded-full bg-gray-800/50 flex items-center justify-center mb-4 text-gray-400">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+              </svg>
+            </div>
+            <p className="text-gray-400 font-medium">Select a message from the list<br />to view its details</p>
           </div>
         )}
       </div>
@@ -441,6 +564,7 @@ function ProjectsTab({ projects, addProject, deleteProject }: {
     title: '', description: '', longDescription: '',
     tech: '', github: '', demo: '', features: '',
   })
+  const [featureInput, setFeatureInput] = useState('')
 
   const set = (field: string, value: string) =>
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -468,7 +592,7 @@ function ProjectsTab({ projects, addProject, deleteProject }: {
       ...formData,
       tech: formData.tech.split(',').map(t => t.trim()).filter(Boolean),
       features: formData.features.split('\n').map(f => f.trim()).filter(Boolean),
-      image: imageFile ? `/images/projects/${imageFile.name}` : '/images/projects/default.jpg',
+      image: imagePreview || '/images/projects/default.jpg',
     })
     setSubmitting(false)
     if (success) resetForm()
@@ -482,13 +606,33 @@ function ProjectsTab({ projects, addProject, deleteProject }: {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
     >
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-white">Projects ({projects.length})</h2>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+          <h2 className="text-2xl font-bold text-white flex items-center gap-3 mb-1">
+            <div className="p-2 bg-neon-cyan/10 rounded-lg">
+              <svg className="w-5 h-5 text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+            Projects Portfolio
+          </h2>
+          <p className="text-gray-400 text-sm">Manage your portfolio projects ({projects.length} total)</p>
+        </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="px-6 py-2.5 bg-gradient-to-r from-neon-blue to-neon-cyan text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-neon-blue/50 transition-all"
+          className="px-6 py-2.5 bg-gradient-to-r from-neon-blue to-neon-cyan text-white font-medium rounded-xl hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:-translate-y-0.5 transition-all flex items-center gap-2"
         >
-          {showForm ? 'Cancel' : '+ Add Project'}
+          {showForm ? (
+            <>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+              Cancel Addition
+            </>
+          ) : (
+            <>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
+              Add New Project
+            </>
+          )}
         </button>
       </div>
 
@@ -552,15 +696,64 @@ function ProjectsTab({ projects, addProject, deleteProject }: {
                 {/* Features */}
                 <div>
                   <h4 className="text-sm font-semibold text-neon-blue uppercase tracking-wide mb-3">Key Features</h4>
-                  <label className="block text-sm text-gray-300 mb-2">Features (one per line) *</label>
-                  <textarea
-                    placeholder={'User authentication\nReal-time search\nResponsive design'}
-                    value={formData.features}
-                    onChange={e => set('features', e.target.value)}
-                    className={inputClass}
-                    rows={5}
-                    required
-                  />
+                  <label className="block text-sm text-gray-300 mb-2">Features *</label>
+                  <div className="space-y-3">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="e.g. User authentication"
+                        value={featureInput}
+                        onChange={e => setFeatureInput(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (featureInput.trim()) {
+                              const currentFeatures = formData.features ? formData.features.split('\n') : [];
+                              set('features', [...currentFeatures, featureInput.trim()].join('\n'));
+                              setFeatureInput('');
+                            }
+                          }
+                        }}
+                        className={inputClass}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (featureInput.trim()) {
+                            const currentFeatures = formData.features ? formData.features.split('\n') : [];
+                            set('features', [...currentFeatures, featureInput.trim()].join('\n'));
+                            setFeatureInput('');
+                          }
+                        }}
+                        className="px-4 py-3 bg-neon-blue/20 text-neon-blue border border-neon-blue/50 rounded-lg hover:bg-neon-blue/30 transition-all font-semibold"
+                      >
+                        Add
+                      </button>
+                    </div>
+
+                    {formData.features && (
+                      <ul className="space-y-2 mt-3">
+                        {formData.features.split('\n').map((feat, index) => (
+                          <li key={index} className="flex justify-between items-center bg-black/40 border border-glass-border px-3 py-2 rounded-lg text-gray-300 text-sm">
+                            <span>{feat}</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const list = formData.features.split('\n');
+                                list.splice(index, 1);
+                                set('features', list.join('\n'));
+                              }}
+                              className="text-red-400 hover:text-red-300 hover:bg-red-400/10 p-1 rounded transition-colors"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
 
                 {/* Image upload */}
@@ -705,7 +898,7 @@ function SkillsTab({ skills, addSkill, updateSkill, deleteSkill }: {
       }
       if (allSuccess && names.length > 0) closeForm()
     }
-    
+
     setSubmitting(false)
   }
 
@@ -719,16 +912,24 @@ function SkillsTab({ skills, addSkill, updateSkill, deleteSkill }: {
       exit={{ opacity: 0, y: -20 }}
     >
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h2 className="text-2xl font-bold text-white">Skills ({skills.length})</h2>
-          <p className="text-gray-400 text-sm mt-0.5">Manage your skills across all categories</p>
+          <h2 className="text-2xl font-bold text-white flex items-center gap-3 mb-1">
+            <div className="p-2 bg-purple-500/10 rounded-lg">
+              <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            Technical Skills
+          </h2>
+          <p className="text-gray-400 text-sm">Manage your skills across all categories ({skills.length} total)</p>
         </div>
         <button
           onClick={openAdd}
-          className="px-6 py-2.5 bg-gradient-to-r from-neon-blue to-neon-cyan text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-neon-blue/50 transition-all"
+          className="px-6 py-2.5 bg-gradient-to-r from-purple-500 to-neon-cyan text-white font-medium rounded-xl hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] hover:-translate-y-0.5 transition-all flex items-center gap-2"
         >
-          + Add Skill
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
+          Add New Skill
         </button>
       </div>
 
@@ -793,11 +994,10 @@ function SkillsTab({ skills, addSkill, updateSkill, deleteSkill }: {
       <div className="flex flex-wrap gap-2 mb-6">
         <button
           onClick={() => setActiveCategory('all')}
-          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-            activeCategory === 'all'
-              ? 'bg-neon-blue text-white'
-              : 'bg-glass-white border border-glass-border text-gray-400 hover:text-white'
-          }`}
+          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${activeCategory === 'all'
+            ? 'bg-neon-blue text-white'
+            : 'bg-glass-white border border-glass-border text-gray-400 hover:text-white'
+            }`}
         >
           All ({skills.length})
         </button>
@@ -805,11 +1005,10 @@ function SkillsTab({ skills, addSkill, updateSkill, deleteSkill }: {
           <button
             key={cat}
             onClick={() => setActiveCategory(cat)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium capitalize transition-all ${
-              activeCategory === cat
-                ? 'bg-neon-blue text-white'
-                : 'bg-glass-white border border-glass-border text-gray-400 hover:text-white'
-            }`}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium capitalize transition-all ${activeCategory === cat
+              ? 'bg-neon-blue text-white'
+              : 'bg-glass-white border border-glass-border text-gray-400 hover:text-white'
+              }`}
           >
             {cat} ({countOf(cat)})
           </button>
