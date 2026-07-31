@@ -49,8 +49,8 @@ export async function POST(req: NextRequest) {
       accessToken,
       user: { username: admin.username, role: 'admin' }
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Login error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error', details: error.message, stack: error.stack }, { status: 500 })
   }
 }
